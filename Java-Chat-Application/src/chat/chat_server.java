@@ -6,6 +6,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class chat_server extends javax.swing.JFrame {
 
@@ -38,6 +40,9 @@ public class chat_server extends javax.swing.JFrame {
                 // Store the message in the custom message storage
                 messageStorage.addMessage(message);
     
+                // Print the list of messages to the console
+                printMessagesToConsole();
+    
             } catch (ClassNotFoundException classNotFoundException) {
                 // Handle the exception
             } catch (IOException ioException) {
@@ -45,6 +50,13 @@ public class chat_server extends javax.swing.JFrame {
                 // Handle the IO exception, e.g., notify the user
             }
         } while (!message.equals("Client - END"));
+    }
+    
+    // Method to print the list of messages to the console
+    private void printMessagesToConsole() {
+        for (int i = 0; i < messageStorage.getSize(); i++) {
+            System.out.println("Message " + (i + 1) + ": " + messageStorage.getMessage(i));
+        }
     }
     
     
@@ -89,6 +101,7 @@ public class chat_server extends javax.swing.JFrame {
         status = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(51, 255, 204));
@@ -100,6 +113,7 @@ public class chat_server extends javax.swing.JFrame {
 
         chatArea.setColumns(20);
         chatArea.setRows(5);
+        
         jScrollPane1.setViewportView(chatArea);
 
         jPanel1.add(jScrollPane1);
@@ -134,9 +148,9 @@ public class chat_server extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(51, 0, 51));
         jLabel2.setText("Server");
         jLabel2.setToolTipText("");
-        jLabel2.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
+        //jLabel2.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         jPanel1.add(jLabel2);
-        jLabel2.setBounds(80, 10, 190, 60);
+        jLabel2.setBounds(10, 10, 190, 60);
 
         jLabel1.setBackground(new java.awt.Color(153, 255, 204));
         jPanel1.add(jLabel1);
@@ -171,26 +185,35 @@ public class chat_server extends javax.swing.JFrame {
 	jTextField1.setText("");
     }
 
-    private void sendMessage(String message)
-    {
-        try
-        {
-            
-            chatArea.append("\nME(Server) - "+message);
-            String encryptedmsg = encyrDecry.encrypt(message, secretKey);
-            
-            output.writeObject("                                                             (enc):" + encryptedmsg);
-            EncryDecry encyrDecry = new EncryDecry();
-            message = encyrDecry.decrypt(encryptedmsg, secretKey);
-            output.writeObject("                                                             Server(decrypt) - " + message);
-            output.flush();
-        }
-        catch(IOException ioException)
-        {
-            chatArea.append("\n Unable to Send Message");
-        }
-    }
+    private void sendMessage(String message) {
+    try {
+        // Get the current time
+        LocalDateTime currentTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
+        // Format the time as a string
+        String timeString = currentTime.format(formatter);
+
+        // Create the complete message with the timestamp
+        String completeMessage = timeString + " - ME(Server) - " + message;
+
+        chatArea.append("\n" + completeMessage);
+        
+        String encryptedmsg = encyrDecry.encrypt(message, secretKey);
+        System.out.println("(enc):" + encryptedmsg);
+        //output.writeObject("(enc):" + encryptedmsg);
+        EncryDecry encyrDecry = new EncryDecry();
+        message = encyrDecry.decrypt(encryptedmsg, secretKey);
+        System.out.println("Server(decrypt) - " + message);
+        output.writeObject("                                                                       "+timeString + " - "+ "Server(decrypt) - "   + message);
+        output.flush();
+    } catch (IOException ioException) {
+        chatArea.append("\n Unable to Send Message");
+    }
+}
+
+
+    
     private javax.swing.JTextArea chatArea;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
