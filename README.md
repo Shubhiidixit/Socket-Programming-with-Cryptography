@@ -88,3 +88,6 @@ This secure messaging application can find utility in various domains, including
 - **Customer Support**: Businesses can provide secure chat support for customers who have concerns about sensitive account information or need assistance with confidential matters.
 
 - **Cybersecurity Awareness**: Secure chat apps can be used to raise awareness about cybersecurity issues and best practices, educating users about the importance of secure communication.
+
+
+**NOTE**: This is an ongoing project. It is not yet completed.
