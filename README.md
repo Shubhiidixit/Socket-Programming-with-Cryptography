@@ -90,4 +90,3 @@ This secure messaging application can find utility in various domains, including
 - **Cybersecurity Awareness**: Secure chat apps can be used to raise awareness about cybersecurity issues and best practices, educating users about the importance of secure communication.
 
 
-**NOTE**: This is an ongoing project. It is not yet completed.
